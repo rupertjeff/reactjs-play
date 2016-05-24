@@ -1,3 +1,4 @@
+// config
 var baseUrl = [
     window.baseUrl,
     'api'
@@ -9,6 +10,7 @@ var baseUrl = [
 
 window.axios.defaults.headers.common['Accept'] = 'application/json';
 
+// TaskService
 var TaskService = (function (server, baseUrl) {
     server.interceptors.response.use((response) => {
         // process response from server here if need be?
@@ -42,13 +44,39 @@ var TaskService = (function (server, baseUrl) {
         return server.delete([baseUrl, task].join('/'));
     }
 
+    function updateSort(orderedTasks) {
+        return server.patch([baseUrl, 'sort'].join('/'), orderedTasks);
+    }
+
     return {
         all: getTasks,
         get: getTask,
         save: saveTask,
-        delete: deleteTask
+        delete: deleteTask,
+        sort: updateSort
     };
 })(window.axios.create(), [baseUrl, 'tasks'].join('/'));
+
+// Task Item
+const DraggableTypes = {
+    TASK: 'Task'
+};
+
+let taskSource = {
+    beginDrag: function (props) {
+        return {
+            id: props.id
+        };
+    }
+};
+
+function collect(connect, monitor) {
+    console.log('collect');
+    return {
+        connectDragSource: connect.dragSource(),
+        isDragging: monitor.isDragging()
+    };
+}
 
 var Task = React.createClass({
     handleStatusChange: function (e) {
@@ -57,9 +85,19 @@ var Task = React.createClass({
     handleDelete: function (e) {
         this.props.handleTaskDelete(this.props.id);
     },
+    propTypes: {
+        connectDragSource: React.PropTypes.func.isRequired,
+        isDragging: React.PropTypes.bool.isRequired
+    },
     render: function () {
-        return (
+        let connectDragSource = this.props.connectDragSource,
+            isDragging = this.props.isDragging;
+
+        console.log(this.props);
+
+        return connectDragSource(
             <li className="task-list-task">
+                <button type="button">Move</button>
                 <label className="task-list-task-name">
                     <input type="checkbox" className="task-list-task-checkbox" value="complete" checked={this.props.complete} onChange={this.handleStatusChange}/>
                     <span className="task-list-task-name-value">{this.props.task}</span>
@@ -70,6 +108,9 @@ var Task = React.createClass({
     }
 });
 
+let DragDropTask = ReactDnD.DragSource(DraggableTypes.TASK, taskSource, collect)(Task);
+
+// TaskList
 var TaskList = React.createClass({
     render: function () {
         var taskNodes = this.props.tasks.map((task) => {
@@ -78,7 +119,7 @@ var TaskList = React.createClass({
                 key = task.id;
             }
             return (
-                <Task key={key} {...task} handleTaskStatusChange={this.props.handleTaskStatusChange} handleTaskDelete={this.props.handleTaskDelete}/>
+                <DragDropTask key={key} {...task} handleTaskStatusChange={this.props.handleTaskStatusChange} handleTaskDelete={this.props.handleTaskDelete}/>
             );
         });
 
@@ -93,6 +134,7 @@ var TaskList = React.createClass({
     }
 });
 
+// TaskForm
 var TaskForm = React.createClass({
     getInitialState: function () {
         return {
@@ -138,6 +180,7 @@ var TaskForm = React.createClass({
     }
 });
 
+// TodoList
 var TodoList = React.createClass({
     getInitialState: function () {
         return {
@@ -197,7 +240,9 @@ var TodoList = React.createClass({
     }
 });
 
+let DragDropTodoList = ReactDnD.DragDropContext(ReactDnDHTML5Backend)(TodoList);
+
 ReactDOM.render(
-    <TodoList/>,
+    <DragDropTodoList/>,
     document.getElementById('todo-list')
 );
