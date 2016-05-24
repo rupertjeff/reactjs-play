@@ -22,7 +22,7 @@ class TaskController extends Controller
      */
     public function index()
     {
-        return $this->respondSuccess(Task::all(), new TaskTransformer, 'task');
+        return $this->respondSuccess(Task::orderBy('sort', 'asc')->get(), new TaskTransformer, 'task');
     }
 
     /**
@@ -63,5 +63,18 @@ class TaskController extends Controller
         $task->delete();
 
         return $this->respondNoContent();
+    }
+
+    /**
+     * @param Request $request
+     *
+     * @return \Symfony\Component\HttpFoundation\Response
+     */
+    public function updateSort(Request $request)
+    {
+        Task::updateSort($request->only('ids'));
+        $tasks = Task::all();
+
+        return $this->respondSuccess($tasks, new TaskTransformer, 'task');
     }
 }

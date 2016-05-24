@@ -15,8 +15,9 @@ Route::group(['prefix' => 'api', 'namespace' => 'Api'], function () {
     Route::group(['prefix' => 'tasks'], function () {
         Route::get('/', ['uses' => 'TaskController@index']);
         Route::post('/', ['uses' => 'TaskController@store']);
-        Route::put('/{task}', ['uses' => 'TaskController@update']);
-        Route::delete('/{task}', ['uses' => 'TaskController@destroy']);
+        Route::put('{task}', ['uses' => 'TaskController@update']);
+        Route::delete('{task}', ['uses' => 'TaskController@destroy']);
+        Route::patch('sort', ['uses' => 'TaskController@updateSort']);
     });
 });
 

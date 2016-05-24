@@ -23,6 +23,7 @@ class Task extends TransformerAbstract
             'id'       => $task->getKey(),
             'task'     => $task->getTask(),
             'complete' => $task->isComplete(),
+            'sort'     => $task->getSort(),
         ];
     }
 }
