@@ -1,0 +1,23 @@
+{
+  "private": true,
+  "scripts": {
+    "prod": "gulp --production",
+    "dev": "gulp watch"
+  },
+  "devDependencies": {
+    "bootstrap": "^4.0.0-alpha.2",
+    "bootstrap-sass": "^3.3.0",
+    "gulp": "^3.9.1",
+    "laravel-elixir": "^5.0.0",
+    "laravel-elixir-webpack": "^1.0.1"
+  },
+  "dependencies": {
+    "babel-core": "^6.9.0",
+    "babel-loader": "^6.2.4",
+    "babel-preset-react": "^6.5.0",
+    "laravel-elixir-webpack-advanced": "^0.3.3",
+    "react": "^15.0.2",
+    "react-dom": "^15.0.2",
+    "webpack": "^1.13.0"
+  }
+}
