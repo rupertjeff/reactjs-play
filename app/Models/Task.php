@@ -30,25 +30,6 @@ class Task extends Model
     }
 
     /**
-     * @param array $ids
-     *
-     * @return bool
-     */
-    public static function updateSort(array $ids)
-    {
-        $count = 0;
-        foreach ($ids as $id) {
-            \DB::table(self::getTable())
-                ->where('id', $id)
-                ->update([
-                    'count' => ++$count,
-                ]);
-        }
-
-        return true;
-    }
-
-    /**
      * @param array $attributes
      *
      * @return Task
@@ -83,5 +64,24 @@ class Task extends Model
     public function getSort(): int
     {
         return (int)$this->getAttribute('sort');
+    }
+
+    /**
+     * @param array $ids
+     *
+     * @return bool
+     */
+    public function updateSort(array $ids)
+    {
+        $count = 0;
+        foreach ($ids as $id) {
+            \DB::table($this->getTable())
+                ->where('id', $id)
+                ->update([
+                    'sort' => ++$count,
+                ]);
+        }
+
+        return true;
     }
 }

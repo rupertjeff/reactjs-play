@@ -72,7 +72,7 @@ class TaskController extends Controller
      */
     public function updateSort(Request $request)
     {
-        Task::updateSort($request->only('ids'));
+        (new Task)->updateSort($request->get('ids'));
         $tasks = Task::all();
 
         return $this->respondSuccess($tasks, new TaskTransformer, 'task');
