@@ -62,23 +62,62 @@ const DraggableTypes = {
     TASK: 'Task'
 };
 
-let taskSource = {
+let taskDragSource = {
     beginDrag: function (props) {
         return {
-            id: props.id
+            id: props.id,
+            index: props.index
         };
     }
 };
 
-function collect(connect, monitor) {
-    console.log('collect');
+let taskDropTarget = {
+    hover: function (props, monitor, component) {
+        const dragIndex = monitor.getItem().index;
+        const hoverIndex = props.index;
+
+        if (dragIndex === hoverIndex) {
+            return;
+        }
+
+        const hoverBoundingRect = ReactDOM.findDOMNode(component).getBoundingClientRect();
+        const hoverMiddleY = (hoverBoundingRect.bottom - hoverBoundingRect.top) / 2;
+        const clientOffset = monitor.getClientOffset();
+        const hoverClientY = clientOffset.y - hoverBoundingRect.top;
+
+        // Restricting the move to when selected item is above/below 50% of hovered
+        // item, depending on the direction being moved by the user.
+        if (dragIndex < hoverIndex && hoverClientY < hoverMiddleY) {
+            return;
+        }
+        if (dragIndex > hoverIndex && hoverClientY > hoverMiddleY) {
+            return;
+        }
+
+        props.moveTask(dragIndex, hoverIndex);
+
+        // Not recommended in most cases, as this is a mutation action. According
+        // to the docs, it helps significantly with performance, so it's allowed
+        monitor.getItem().index = hoverIndex;
+    }
+};
+
+function collectDrag(connect, monitor) {
     return {
         connectDragSource: connect.dragSource(),
+        connectDragPreview: connect.dragPreview(),
         isDragging: monitor.isDragging()
     };
 }
 
-var Task = React.createClass({
+function collectDrop(connect, monitor) {
+    return {
+        connectDropTarget: connect.dropTarget(),
+        isOver: monitor.isOver()
+    };
+}
+
+var BaseTask = React.createClass({
     handleStatusChange: function (e) {
         this.props.handleTaskStatusChange(this.props.id, !this.props.complete);
     },
@@ -87,28 +126,30 @@ var Task = React.createClass({
     },
     propTypes: {
         connectDragSource: React.PropTypes.func.isRequired,
+        connectDragPreview: React.PropTypes.func.isRequired,
+        connectDropTarget: React.PropTypes.func.isRequired,
+        moveTask: React.PropTypes.func.isRequired,
         isDragging: React.PropTypes.bool.isRequired
     },
     render: function () {
         let connectDragSource = this.props.connectDragSource,
-            isDragging = this.props.isDragging;
+            connectDragPreview = this.props.connectDragPreview,
+            connectDropTarget = this.props.connectDropTarget;
 
-        console.log(this.props);
-
-        return connectDragSource(
+        return connectDragPreview(connectDropTarget(
             <li className="task-list-task">
-                <button type="button">Move</button>
+                {connectDragSource(<button type="button">Move</button>)}
                 <label className="task-list-task-name">
                     <input type="checkbox" className="task-list-task-checkbox" value="complete" checked={this.props.complete} onChange={this.handleStatusChange}/>
                     <span className="task-list-task-name-value">{this.props.task}</span>
                 </label>
                 <button type="button" onClick={this.handleDelete}>&times;</button>
             </li>
-        );
+        ));
     }
 });
 
-let DragDropTask = ReactDnD.DragSource(DraggableTypes.TASK, taskSource, collect)(Task);
+let Task = ReactDnD.DropTarget(DraggableTypes.TASK, taskDropTarget, collectDrop)(ReactDnD.DragSource(DraggableTypes.TASK, taskDragSource, collectDrag)(BaseTask));
 
 // TaskList
 var TaskList = React.createClass({
@@ -119,7 +160,7 @@ var TaskList = React.createClass({
                 key = task.id;
             }
             return (
-                <DragDropTask key={key} {...task} handleTaskStatusChange={this.props.handleTaskStatusChange} handleTaskDelete={this.props.handleTaskDelete}/>
+                <Task key={key} {...task} handleTaskStatusChange={this.props.handleTaskStatusChange} handleTaskDelete={this.props.handleTaskDelete} moveTask={this.props.moveTask}/>
             );
         });
 
@@ -181,7 +222,7 @@ var TaskForm = React.createClass({
 });
 
 // TodoList
-var TodoList = React.createClass({
+var BaseTodoList = React.createClass({
     getInitialState: function () {
         return {
             tasks: []
@@ -230,19 +271,34 @@ var TodoList = React.createClass({
         }).catch((error) => {
         });
     },
+    moveTask: function (dragIndex, hoverIndex) {
+        console.log('should move');
+        const { tasks } = this.state.tasks;
+        const dragTask = tasks[dragIndex];
+
+        this.setState(React.update(this.state, {
+            tasks: {
+                $splice: [
+                    [dragIndex, 1],
+                    [hoverIndex, 0, dragTask]
+                ]
+            }
+        }));
+        // TaskService.sort(this.state.tasks).then(() => this.loadTasks());
+    },
     render: function () {
         return (
             <div className="todo-list">
-                <TaskList tasks={this.state.tasks} handleTaskStatusChange={this.handleTaskStatusChange} handleTaskDelete={this.handleTaskDelete}/>
+                <TaskList tasks={this.state.tasks} handleTaskStatusChange={this.handleTaskStatusChange} handleTaskDelete={this.handleTaskDelete} moveTask={this.moveTask}/>
                 <TaskForm handleTaskSubmit={this.handleCreateTask}/>
             </div>
         );
     }
 });
 
-let DragDropTodoList = ReactDnD.DragDropContext(ReactDnDHTML5Backend)(TodoList);
+let TodoList = ReactDnD.DragDropContext(ReactDnDHTML5Backend)(BaseTodoList);
 
 ReactDOM.render(
-    <DragDropTodoList/>,
+    <TodoList/>,
     document.getElementById('todo-list')
 );
