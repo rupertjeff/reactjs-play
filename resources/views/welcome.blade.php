@@ -5,7 +5,6 @@
 
         {!! Html::style(elixir('css/bootstrap.css')) !!}
 
-        <script src="https://cdnjs.cloudflare.com/ajax/libs/babel-core/5.8.23/browser.min.js"></script>
         {!! Html::script(elixir('js/react.js')) !!}
         {!! Html::script(elixir('js/helpers.js')) !!}
         <script>
@@ -18,6 +17,6 @@
             </div>
         </div>
 
-        {!! Html::script('js/test.js', ['type' => 'text/babel']) !!}
+        {!! Html::script('js/app.js') !!}
     </body>
 </html>

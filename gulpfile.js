@@ -20,20 +20,26 @@ elixir.config.js.babel.options.presets = [
 elixir(function(mix) {
     mix.sass('bootstrap.scss')
         .scripts([
-            './node_modules/react/dist/react.min.js',
+            './node_modules/react/dist/react-with-addons.min.js',
             './node_modules/react-dom/dist/react-dom.min.js',
             './node_modules/react-dnd/dist/ReactDnD.min.js',
             './node_modules/react-dnd-html5-backend/dist/ReactDnDHTML5Backend.min.js'
         ], 'public/js/react.js')
         .scripts([
-            // './node_modules/babel-core/lib/api/browser.js',
             './node_modules/axios/dist/axios.min.js'
         ], 'public/js/helpers.js')
-        .scripts('test.js')
+        .babel([
+            'config.js',
+            'services/task.js',
+            'components/task.js',
+            'components/taskList.js',
+            'components/taskForm.js',
+            'components/todoList.js'
+        ], 'public/js/app.js')
         .version([
             'css/bootstrap.css',
             'js/react.js',
             'js/helpers.js',
-            'js/test.js'
+            'js/app.js'
         ]);
 });
