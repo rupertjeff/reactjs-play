@@ -5,8 +5,8 @@
 
         {!! Html::style(elixir('css/bootstrap.css')) !!}
 
-        {!! Html::script(elixir('js/react.js')) !!}
-        {!! Html::script(elixir('js/helpers.js')) !!}
+        {{--{!! Html::script(elixir('js/react.js')) !!}--}}
+        {{--{!! Html::script(elixir('js/helpers.js')) !!}--}}
         <script>
             window.baseUrl = '{{ url('/') }}';
         </script>
@@ -17,6 +17,7 @@
             </div>
         </div>
 
+        {!! Html::script('js/common.js') !!}
         {!! Html::script('js/app.js') !!}
     </body>
 </html>

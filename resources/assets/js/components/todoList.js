@@ -1,19 +1,76 @@
-var BaseTodoList = React.createClass({
-    getInitialState: function () {
-        return {
+import React, {Component} from 'react';
+import {DragDropContext} from 'react-dnd';
+import ReactDnDHTML5Backend from 'react-dnd-html5-backend';
+import update from 'react/lib/update';
+import TaskService from '../services/tasks';
+
+import TaskList from './taskList';
+import TaskForm from './taskForm';
+
+class BaseTodoList extends Component {
+    constructor(props) {
+        super(props);
+
+        this.state = {
             tasks: []
         };
-    },
-    componentDidMount: function () {
+        this.taskService = new TaskService();
+        this.moveTask = this.moveTask.bind(this);
+        this.dropTask = this.dropTask.bind(this);
+    }
+
+    // React-specific functions
+    componentDidMount() {
         this.loadTasks();
-    },
-    handleCreateTask: function (task) {
+    }
+
+    render() {
+        return (
+            <div className="todo-list">
+                <TaskList tasks={this.state.tasks} handleTaskStatusChange={this.handleTaskStatusChange} handleTaskDelete={this.handleTaskDelete} moveTask={this.moveTask} dropTask={this.dropTask}/>
+                <TaskForm handleTaskSubmit={this.handleCreateTask}/>
+            </div>
+        );
+    }
+
+    // ReactDnD related functions
+    dropTask() {
+        this.taskService.sort({
+            'ids': this.state.tasks.map((task) => task.id)
+        }).then(() => this.loadTasks());
+    }
+
+    moveTask(dragIndex, hoverIndex) {
+        const {tasks} = this.state;
+        const dragTask = tasks[dragIndex];
+
+        this.setState(update(this.state, {
+            tasks: {
+                $splice: [
+                    [dragIndex, 1],
+                    [hoverIndex, 0, dragTask]
+                ]
+            }
+        }));
+    }
+
+    // TodoList-specific functions
+    loadTasks() {
+        this.taskService.all().then((response) => {
+            this.setState({
+                tasks: response.data
+            });
+        });
+    }
+
+    handleCreateTask(task) {
         this.setState({
             tasks: this.state.tasks.concat([task])
         });
-        TaskService.save(task).then(() => this.loadTasks());
-    },
-    handleTaskStatusChange: function (id, newStatus) {
+        this.taskService.save(task).then(() => this.loadTasks());
+    }
+
+    handleTaskStatusChange(id, newStatus) {
         let task = this.state.tasks.filter((element) => id === element.id).shift();
 
         task.complete = newStatus;
@@ -28,56 +85,18 @@ var BaseTodoList = React.createClass({
             })
         });
 
-        TaskService.save(task).then(() => this.loadTasks());
-    },
-    handleTaskDelete: function (id) {
+        this.taskService.save(task).then(() => this.loadTasks());
+    }
+
+    handleTaskDelete(id) {
         let tasks = this.state.tasks.filter((element) => id !== element.id);
 
         this.setState({
             tasks: tasks
         });
 
-        TaskService.delete(id);
-    },
-    loadTasks: function () {
-        TaskService.all().then((response) => {
-            this.setState({
-                tasks: response.data.data
-            });
-        }).catch((error) => {
-        });
-    },
-    moveTask: function (dragIndex, hoverIndex) {
-        const { tasks } = this.state;
-        const dragTask = tasks[dragIndex];
-
-        this.setState(React.addons.update(this.state, {
-            tasks: {
-                $splice: [
-                    [dragIndex, 1],
-                    [hoverIndex, 0, dragTask]
-                ]
-            }
-        }));
-    },
-    dropTask: function () {
-        TaskService.sort({
-            'ids': this.state.tasks.map((task) => task.id)
-        }).then(() => this.loadTasks());
-    },
-    render: function () {
-        return (
-            <div className="todo-list">
-                <TaskList tasks={this.state.tasks} handleTaskStatusChange={this.handleTaskStatusChange} handleTaskDelete={this.handleTaskDelete} moveTask={this.moveTask} dropTask={this.dropTask}/>
-                <TaskForm handleTaskSubmit={this.handleCreateTask}/>
-            </div>
-        );
+        this.taskService.delete(id);
     }
-});
+}
 
-let TodoList = ReactDnD.DragDropContext(ReactDnDHTML5Backend)(BaseTodoList);
-
-ReactDOM.render(
-    <TodoList/>,
-    document.getElementById('todo-list')
-);
+export default DragDropContext(ReactDnDHTML5Backend)(BaseTodoList);

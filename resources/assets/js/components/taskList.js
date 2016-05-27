@@ -1,10 +1,15 @@
-var TaskList = React.createClass({
-    render: function () {
-        var taskNodes = this.props.tasks.map((task, index) => {
-            var key = +Date.now();
+import React, {Component} from 'react';
+
+import Task from './task'
+
+class TaskList extends Component {
+    render() {
+        let taskNodes = this.props.tasks.map((task, index) => {
+            let key = +Date.now();
             if (task.id) {
                 key = task.id;
             }
+
             return (
                 <Task key={key} {...task} index={index} handleTaskStatusChange={this.props.handleTaskStatusChange} handleTaskDelete={this.props.handleTaskDelete} moveTask={this.props.moveTask} dropTask={this.props.dropTask}/>
             );
@@ -19,4 +24,6 @@ var TaskList = React.createClass({
             </div>
         );
     }
-});
+}
+
+export default TaskList;

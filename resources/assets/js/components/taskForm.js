@@ -1,33 +1,15 @@
-var TaskForm = React.createClass({
-    getInitialState: function () {
-        return {
+import React, {Component} from 'react';
+
+class TaskForm extends Component {
+    constructor(props) {
+        super(props);
+
+        this.state = {
             task: ''
         };
-    },
-    isFormValid: function () {
-        return this.state.task.trim();
-    },
-    handleTaskChange: function (e) {
-        this.setState({
-            task: e.target.value
-        });
-    },
-    handleSubmit: function (e) {
-        e.preventDefault();
+    }
 
-        if (!this.isFormValid()) {
-            return;
-        }
-
-        this.props.handleTaskSubmit({
-            task: this.state.task.trim()
-        });
-
-        this.setState({
-            task: ''
-        });
-    },
-    render: function () {
+    render() {
         return (
             <form class="todo-list-form" onSubmit={this.handleSubmit}>
                 <h2>Add Task</h2>
@@ -41,4 +23,32 @@ var TaskForm = React.createClass({
             </form>
         );
     }
-});
+
+    handleTaskChange(e) {
+        this.setState({
+            task: e.target.value
+        });
+    }
+
+    handleSubmit(e) {
+        e.preventDefault();
+
+        if (!this.isFormValid()) {
+            return;
+        }
+
+        this.props.handleTaskCreate({
+            task: this.state.task.trim()
+        });
+
+        this.setState({
+            task: ''
+        });
+    }
+
+    isFormValid() {
+        return this.state.task.trim();
+    }
+}
+
+export default TaskForm;
