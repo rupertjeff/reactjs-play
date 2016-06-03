@@ -3,7 +3,7 @@
     <head>
         <title>Laravel</title>
 
-        {!! Html::style(elixir('css/bootstrap.css')) !!}
+        {!! Html::style(elixir('css/app.css')) !!}
 
         <script>
             window.baseUrl = '{{ url('/') }}';

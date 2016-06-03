@@ -14,6 +14,6 @@ require('laravel-elixir-webpack-advanced');
  */
 
 elixir(function(mix) {
-    mix.sass('bootstrap.scss')
-        .version(['css/bootstrap.css']);
+    mix.sass('app.scss')
+        .version(['css/app.css']);
 });
