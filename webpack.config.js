@@ -24,7 +24,6 @@ module.exports = {
     resolve: {
         root: rootPath,
         extensions: ['', '.js', '.jsx'],
-        modulesDirectories: ['node_modules', 'resources/assets/js']
     },
     output: {
         path: publicJsPath,

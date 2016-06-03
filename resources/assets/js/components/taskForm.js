@@ -7,6 +7,10 @@ class TaskForm extends Component {
         this.state = {
             task: ''
         };
+
+        this.handleTaskChange = this.handleTaskChange.bind(this);
+        this.handleSubmit = this.handleSubmit.bind(this);
+        this.isFormValid = this.isFormValid.bind(this);
     }
 
     render() {
@@ -37,7 +41,7 @@ class TaskForm extends Component {
             return;
         }
 
-        this.props.handleTaskCreate({
+        this.props.handleTaskSubmit({
             task: this.state.task.trim()
         });
 

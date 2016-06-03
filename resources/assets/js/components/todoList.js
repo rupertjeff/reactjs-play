@@ -17,6 +17,9 @@ class BaseTodoList extends Component {
         this.taskService = new TaskService();
         this.moveTask = this.moveTask.bind(this);
         this.dropTask = this.dropTask.bind(this);
+        this.handleCreateTask = this.handleCreateTask.bind(this);
+        this.handleTaskStatusChange = this.handleTaskStatusChange.bind(this);
+        this.handleTaskDelete = this.handleTaskDelete.bind(this);
     }
 
     // React-specific functions

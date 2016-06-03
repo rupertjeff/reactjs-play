@@ -5,8 +5,6 @@
 
         {!! Html::style(elixir('css/bootstrap.css')) !!}
 
-        {{--{!! Html::script(elixir('js/react.js')) !!}--}}
-        {{--{!! Html::script(elixir('js/helpers.js')) !!}--}}
         <script>
             window.baseUrl = '{{ url('/') }}';
         </script>

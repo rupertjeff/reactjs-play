@@ -3,6 +3,13 @@ import {DragSource, DropTarget} from 'react-dnd';
 import ReactDOM from 'react-dom';
 
 class Task extends Component {
+    constructor(props) {
+        super(props);
+
+        this.handleStatusChange = this.handleStatusChange.bind(this);
+        this.handleDelete = this.handleDelete.bind(this);
+    }
+
     render() {
         let connectDragSource = this.props.connectDragSource,
             connectDragPreview = this.props.connectDragPreview,
