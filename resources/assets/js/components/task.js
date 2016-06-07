@@ -13,17 +13,20 @@ class Task extends Component {
     render() {
         let connectDragSource = this.props.connectDragSource,
             connectDragPreview = this.props.connectDragPreview,
-            connectDropTarget = this.props.connectDropTarget,
-            opacity = this.props.isDragging ? 0 : 1;
+            connectDropTarget = this.props.connectDropTarget;
 
         return connectDropTarget(connectDragPreview(
-            <li className="task-list-task" style={{opacity}}>
-                {connectDragSource(<button type="button">Move</button>)}
-                <label className="task-list-task-name">
-                    <input type="checkbox" className="task-list-task-checkbox" value="complete" checked={this.props.complete} onChange={this.handleStatusChange}/>
-                    <span className="task-list-task-name-value">{this.props.task}</span>
+            <li className={'todo-list-task' + (this.props.isDragging ? ' placeholder' : '')}>
+                {connectDragSource(
+                    <span className="todo-list-task-handle">
+                        <span className="fa fa-bars"><span className="sr-only">Move</span></span>
+                    </span>
+                )}
+                <label className="checkbox todo-list-task-name">
+                    <input type="checkbox" className="todo-list-task-checkbox" value="complete" checked={this.props.complete} onChange={this.handleStatusChange}/>
+                    <span className="todo-list-task-name-value">{this.props.task}</span>
                 </label>
-                <button type="button" onClick={this.handleDelete}>&times;</button>
+                <button type="button" className="btn btn-danger btn-sm todo-list-task-delete" onClick={this.handleDelete}>&times;</button>
             </li>
         ));
     }

@@ -5,7 +5,6 @@ import update from 'react/lib/update';
 import TaskService from '../services/tasks';
 
 import TaskList from './taskList';
-import TaskForm from './taskForm';
 
 class BaseTodoList extends Component {
     constructor(props) {
@@ -29,9 +28,8 @@ class BaseTodoList extends Component {
 
     render() {
         return (
-            <div className="todo-list">
-                <TaskList tasks={this.state.tasks} handleTaskStatusChange={this.handleTaskStatusChange} handleTaskDelete={this.handleTaskDelete} moveTask={this.moveTask} dropTask={this.dropTask}/>
-                <TaskForm handleTaskSubmit={this.handleCreateTask}/>
+            <div className="todo-list-holder">
+                <TaskList tasks={this.state.tasks} handleTaskStatusChange={this.handleTaskStatusChange} handleTaskDelete={this.handleTaskDelete} moveTask={this.moveTask} dropTask={this.dropTask} handleTaskSubmit={this.handleCreateTask}/>
             </div>
         );
     }

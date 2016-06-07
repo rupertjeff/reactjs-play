@@ -1,7 +1,5 @@
 var elixir = require('laravel-elixir');
 
-require('laravel-elixir-webpack-advanced');
-
 /*
  |--------------------------------------------------------------------------
  | Elixir Asset Management
@@ -15,5 +13,6 @@ require('laravel-elixir-webpack-advanced');
 
 elixir(function(mix) {
     mix.sass('app.scss')
+        .copy('node_modules/font-awesome/fonts', 'public/fonts')
         .version(['css/app.css']);
 });

@@ -1,6 +1,6 @@
 import React, {Component} from 'react';
 
-class TaskForm extends Component {
+class AddTaskForm extends Component {
     constructor(props) {
         super(props);
 
@@ -16,13 +16,16 @@ class TaskForm extends Component {
     render() {
         return (
             <form class="todo-list-form" onSubmit={this.handleSubmit}>
-                <h2>Add Task</h2>
                 <div className="form-group">
-                    <label htmlFor="task-name">Task Name</label>
-                    <input type="text" id="task-name" name="task[name]" value={this.state.task} onChange={this.handleTaskChange}/>
-                </div>
-                <div className="form-group form-actions">
-                    <button type="submit">Add</button>
+                    <label htmlFor="task-name" className="sr-only">Task Name</label>
+                    <div className="input-group">
+                        <input type="text" className="form-control" id="task-name" name="task[name]" placeholder="What do you need to do?" value={this.state.task} onChange={this.handleTaskChange}/>
+                        <span className="input-group-btn">
+                            <button type="submit" className="btn btn-success">
+                                <span className="sr-only">Add</span><span className="fa fa-plus"/>
+                            </button>
+                        </span>
+                    </div>
                 </div>
             </form>
         );
@@ -55,4 +58,4 @@ class TaskForm extends Component {
     }
 }
 
-export default TaskForm;
+export default AddTaskForm;

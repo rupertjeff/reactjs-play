@@ -1,2 +1,86 @@
 @import 'bootstrap';
 
+$fa-font-path: '../../fonts';
+@import 'fontawesome';
+
+.todo-list {
+    max-width: 20rem;
+    padding: 2rem 0 0;
+}
+
+.todo-list-listing {
+    padding: 0;
+    margin: 0;
+
+    list-style: none;
+}
+
+.todo-list-task {
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+
+    &.placeholder {
+        position: relative;
+
+        &::after {
+            content: '';
+
+            position: absolute;
+            top: 0;
+            bottom: 0;
+            left: 0;
+            right: 0;
+
+            background-color: yellow;
+        }
+    }
+}
+
+.todo-list-task-handle {
+    width: 2rem;
+    height: 2rem;
+    padding: 0.5rem 0.5625rem;
+
+    cursor: move;
+    line-height: 1rem;
+}
+
+.todo-list-task-name {
+    flex-grow: 1;
+    padding-left: 1.5rem;
+    margin: 0;
+
+    cursor: pointer;
+}
+
+.todo-list-task-checkbox {
+    cursor: pointer;
+}
+
+.todo-list-task-delete {
+    width: 2rem;
+    height: 2rem;
+    padding: 0 0 1rem;
+
+    font-size: 2rem;
+    line-height: 1.65rem;
+}
+
+.task-list-update-enter {
+    opacity: 0.01;
+
+    &.task-list-update-enter-active {
+        opacity: 1;
+        transition: opacity 500ms ease-in;
+    }
+}
+
+.task-list-update-leave {
+    opacity: 1;
+
+    &.task-list-update-leave-active {
+        opacity: 0.01;
+        transition: opacity 300ms ease-in;
+    }
+}

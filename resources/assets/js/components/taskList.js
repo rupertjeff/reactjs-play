@@ -1,6 +1,8 @@
 import React, {Component} from 'react';
+import ReactCSSTransitionGroup from 'react-addons-css-transition-group';
 
-import Task from './task'
+import Task from './task';
+import AddTaskForm from './addTaskForm';
 
 class TaskList extends Component {
     render() {
@@ -16,11 +18,14 @@ class TaskList extends Component {
         });
 
         return (
-            <div className="todo-list-listing">
+            <div className="todo-list">
                 <h2>Tasks</h2>
-                <ul>
-                    {taskNodes}
+                <ul className="todo-list-listing">
+                    <ReactCSSTransitionGroup transitionName="task-list-update" transitionEnterTimeout={500} transitionLeaveTimeout={300}>
+                        {taskNodes}
+                    </ReactCSSTransitionGroup>
                 </ul>
+                <AddTaskForm handleTaskSubmit={this.props.handleCreateTask}/>
             </div>
         );
     }
