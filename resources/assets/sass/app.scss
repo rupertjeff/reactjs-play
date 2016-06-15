@@ -3,9 +3,56 @@
 $fa-font-path: '../../fonts';
 @import 'fontawesome';
 
-.todo-list {
-    max-width: 20rem;
-    padding: 2rem 0 0;
+.todo-list-holder {
+    display: flex;
+}
+
+.todo-list,
+.todo-list-add-list {
+    padding: 2rem 1rem 0;
+
+    &.placeholder {
+        position: relative;
+
+        &::after {
+            content: '';
+
+            position: absolute;
+            top: 0;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            z-index: 2;
+
+            background-color: yellow;
+        }
+    }
+}
+
+.todo-list-header {
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+}
+
+.todo-list-handle {
+    width: 2rem;
+    height: 2rem;
+    padding: 0.5rem 0.5625rem;
+    cursor: move;
+    line-height: 1rem;
+}
+
+.todo-list-header-name {
+    flex-grow: 1;
+}
+
+.todo-list-delete {
+    width: 2rem;
+    height: 2rem;
+    padding: 0 0 1rem;
+    font-size: 2rem;
+    line-height: 1.65rem;
 }
 
 .todo-list-listing {

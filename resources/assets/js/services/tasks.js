@@ -1,43 +1,32 @@
-import axios from 'axios';
-import config from '../config';
+import BaseService from './base';
+import isString from './../helpers/isString';
 
-class TaskService {
+class TaskService extends BaseService {
     constructor() {
-        let server = axios.create();
-        server.interceptors.response.use((response) => {
-            // process response from server here if need be?
+        super('tasks');
 
-            return Promise.resolve(response.data);
+        this.server.interceptors.request.use((config) => {
+            let data = config.data;
+
+            if (!data) {
+                return config;
+            }
+
+            if (isString(data)) {
+                data = JSON.parse(data);
+            }
+
+            if (data.tasklistId) {
+                data.tasklist_id = data.tasklistId;
+                delete(data.tasklistId);
+            }
+
+            config.data = JSON.stringify(data);
+
+            return config;
         }, (error) => {
             return Promise.reject(error);
         });
-
-        this.server = server;
-        this.baseUrl = [config.apiUrl, 'tasks'].join('/');
-    }
-
-    all() {
-        return this.server.get(this.baseUrl);
-    }
-
-    get(id) {
-        return this.server.get([this.baseUrl, id].join('/'));
-    }
-
-    save(task) {
-        if (task.id) {
-            return this.server.put([this.baseUrl, task.id].join('/'), task);
-        }
-
-        return this.server.post(this.baseUrl, task);
-    }
-
-    delete(task) {
-        if (+task !== task) {
-            task = task.id;
-        }
-
-        return this.server.delete([this.baseUrl, task].join('/'));
     }
 
     sort(orderedTasks) {

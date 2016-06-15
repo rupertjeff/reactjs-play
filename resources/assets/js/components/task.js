@@ -1,6 +1,7 @@
 import React, {Component, PropTypes} from 'react';
 import {DragSource, DropTarget} from 'react-dnd';
 import ReactDOM from 'react-dom';
+import {DraggableTypes, DroppableTypes} from './../objects/itemTypes';
 
 class Task extends Component {
     constructor(props) {
@@ -48,52 +49,60 @@ Task.propTypes = {
     isDragging: PropTypes.bool.isRequired
 };
 
-const DraggableTypes = {
-    TASK: 'Task'
-};
-
-let taskDragSource = {
-    beginDrag: function (props) {
-        return {
-            id: props.id,
-            index: props.index
-        };
-    }
-};
-
-let taskDropTarget = {
-    hover: function (props, monitor, component) {
-        const dragIndex = monitor.getItem().index;
-        const hoverIndex = props.index;
-
-        if (dragIndex === hoverIndex) {
-            return;
+const taskDragSource = {
+        beginDrag: function (props) {
+            return {
+                id: props.id,
+                tasklistId: props.tasklistId,
+                index: props.index,
+                type: DraggableTypes.TASK
+            };
         }
-
-        const hoverBoundingRect = ReactDOM.findDOMNode(component).getBoundingClientRect();
-        const hoverMiddleY = (hoverBoundingRect.bottom - hoverBoundingRect.top) / 2;
-        const clientOffset = monitor.getClientOffset();
-        const hoverClientY = clientOffset.y - hoverBoundingRect.top;
-
-        // Restricting the move to when selected item is above/below 50% of hovered
-        // item, depending on the direction being moved by the user.
-        if (dragIndex < hoverIndex && hoverClientY < hoverMiddleY) {
-            return;
-        }
-        if (dragIndex > hoverIndex && hoverClientY > hoverMiddleY) {
-            return;
-        }
-
-        props.moveTask(dragIndex, hoverIndex);
-
-        // Not recommended in most cases, as this is a mutation action. According
-        // to the docs, it helps significantly with performance, so it's allowed
-        monitor.getItem().index = hoverIndex;
     },
-    drop: function (props) {
-        props.dropTask();
-    }
-};
+    taskDropTarget = {
+        hover: (props, monitor, component) => {
+            const dragIndex = monitor.getItem().index;
+            const hoverIndex = props.index;
+
+            if (dragIndex === hoverIndex) {
+                return;
+            }
+
+            if (monitor.getItem().tasklistId !== props.tasklistId) {
+                console.log(monitor.getItem().tasklistId, props.tasklistId);
+
+                props.moveTaskToTasklist(dragIndex, monitor.getItem().tasklistId, hoverIndex, props.tasklistId);
+
+                // See note below at end of function.
+                monitor.getItem().tasklistId = props.tasklistId;
+                monitor.getItem().index = hoverIndex;
+
+                return;
+            }
+
+            // const hoverBoundingRect = ReactDOM.findDOMNode(component).getBoundingClientRect();
+            // const hoverMiddleY = (hoverBoundingRect.bottom - hoverBoundingRect.top) / 2;
+            // const clientOffset = monitor.getClientOffset();
+            // const hoverClientY = clientOffset.y - hoverBoundingRect.top;
+            //
+            // // Restricting the move to when selected item is above/below 50% of hovered
+            // // item, depending on the direction being moved by the user.
+            // if (dragIndex < hoverIndex && hoverClientY < hoverMiddleY) {
+            //     return;
+            // }
+            // if (dragIndex > hoverIndex && hoverClientY > hoverMiddleY) {
+            //     return;
+            // }
+
+            props.moveTask(dragIndex, monitor.getItem().tasklistId, hoverIndex);
+
+            // Not recommended in most cases, as this is a mutation action. According
+            // to the docs, it helps significantly with performance, so it's allowed
+            monitor.getItem().index = hoverIndex;
+        },
+        canDrop: (props, monitor) => DroppableTypes.TASK === monitor.getItem().type,
+        drop: (props, monitor) => props.dropTask(monitor.getItem().tasklistId, props.tasklistId)
+    };
 
 function collectDrag(connect, monitor) {
     return {
@@ -110,4 +119,4 @@ function collectDrop(connect, monitor) {
     };
 }
 
-export default DropTarget(DraggableTypes.TASK, taskDropTarget, collectDrop)(DragSource(DraggableTypes.TASK, taskDragSource, collectDrag)(Task));
+export default DropTarget(DraggableTypes.TASK, taskDropTarget, collectDrop)(DragSource(DroppableTypes.TASK, taskDragSource, collectDrag)(Task));

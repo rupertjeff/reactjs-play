@@ -6,19 +6,19 @@ use DB;
 use Illuminate\Database\Eloquent\Model;
 
 /**
- * Class Task
+ * Class Tasklist
  *
  * @package App\Models
  *
  * @method static int                                                                      count()
  * @method static \Illuminate\Database\Query\Builder|\Illuminate\Database\Eloquent\Builder orderBy($column, $direction = 'asc')
  */
-class Task extends Model
+class Tasklist extends Model
 {
     /**
      * @var array
      */
-    protected $fillable = ['tasklist_id', 'task', 'sort'];
+    protected $fillable = ['name', 'sort'];
 
     /**
      * @return int
@@ -37,8 +37,7 @@ class Task extends Model
      */
     public static function create(array $attributes = [])
     {
-        $attributes['complete'] = false;
-        $attributes['sort']     = self::getNextSortValue();
+        $attributes['sort'] = self::getNextSortValue();
 
         return parent::create($attributes);
     }
@@ -65,34 +64,18 @@ class Task extends Model
     }
 
     /**
-     * @return int
-     */
-    public function getTasklistId(): int
-    {
-        return (int)$this->getAttribute('tasklist_id');
-    }
-    
-    /**
      * @return string
      */
-    public function getTask(): string
+    public function getName(): string
     {
-        return $this->getAttribute('task');
+        return $this->getAttribute('name');
     }
 
     /**
-     * @return bool
+     * @return \Illuminate\Database\Eloquent\Relations\HasMany
      */
-    public function isComplete(): bool
+    public function tasks()
     {
-        return (bool)$this->getAttribute('complete');
-    }
-
-    /**
-     * @return int
-     */
-    public function getSort(): int
-    {
-        return (int)$this->getAttribute('sort');
+        return $this->hasMany(Task::class);
     }
 }

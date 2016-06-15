@@ -32,7 +32,7 @@ class TaskController extends Controller
      */
     public function store(Request $request)
     {
-        return $this->respondSuccess(Task::create($request->only(['task'])), new TaskTransformer, 'task');
+        return $this->respondSuccess(Task::create($request->only(['task', 'tasklist_id'])), new TaskTransformer, 'task');
     }
 
     /**
@@ -72,9 +72,8 @@ class TaskController extends Controller
      */
     public function updateSort(Request $request)
     {
-        (new Task)->updateSort($request->get('ids'));
-        $tasks = Task::all();
+        Task::updateSort($request->get('ids'));
 
-        return $this->respondSuccess($tasks, new TaskTransformer, 'task');
+        return $this->respondNoContent();
     }
 }

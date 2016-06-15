@@ -20,9 +20,10 @@ class Task extends TransformerAbstract
     public function transform(TaskModel $task)
     {
         return [
-            'id'       => $task->getKey(),
-            'task'     => $task->getTask(),
-            'complete' => $task->isComplete(),
+            'id'         => $task->getKey(),
+            'tasklistId' => $task->getTasklistId(),
+            'task'       => $task->getTask(),
+            'complete'   => $task->isComplete(),
         ];
     }
 }

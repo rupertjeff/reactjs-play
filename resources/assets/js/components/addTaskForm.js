@@ -44,8 +44,9 @@ class AddTaskForm extends Component {
             return;
         }
 
-        this.props.handleTaskSubmit({
-            task: this.state.task.trim()
+        this.props.handleTaskCreate({
+            task: this.state.task.trim(),
+            tasklistId: this.props.tasklistId
         });
 
         this.setState({
