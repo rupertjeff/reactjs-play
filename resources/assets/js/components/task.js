@@ -80,6 +80,8 @@ const taskDragSource = {
                 return;
             }
 
+            // Use the below to mess around with when the items switch
+            //
             // const hoverBoundingRect = ReactDOM.findDOMNode(component).getBoundingClientRect();
             // const hoverMiddleY = (hoverBoundingRect.bottom - hoverBoundingRect.top) / 2;
             // const clientOffset = monitor.getClientOffset();
