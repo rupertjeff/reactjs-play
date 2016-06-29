@@ -5,10 +5,13 @@ $fa-font-path: '../../fonts';
 
 .todo-list-holder {
     display: flex;
+    flex-flow: wrap;
 }
 
 .todo-list,
 .todo-list-add-list {
+    width: 20%;
+    min-width: 17rem;
     padding: 2rem 1rem 0;
 
     &.placeholder {
@@ -39,6 +42,8 @@ $fa-font-path: '../../fonts';
     width: 2rem;
     height: 2rem;
     padding: 0.5rem 0.5625rem;
+    flex-grow: 0;
+
     cursor: move;
     line-height: 1rem;
 }
@@ -51,6 +56,8 @@ $fa-font-path: '../../fonts';
     width: 2rem;
     height: 2rem;
     padding: 0 0 1rem;
+    flex-grow: 0;
+
     font-size: 2rem;
     line-height: 1.65rem;
 }
