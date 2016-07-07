@@ -2,36 +2,53 @@ import React, {Component} from 'react';
 import {DragDropContext} from 'react-dnd';
 import ReactDnDHTML5Backend from 'react-dnd-html5-backend';
 import update from 'react/lib/update';
-import TaskService from '../services/tasks';
-import TaskListService from '../services/tasklists';
+// import TaskService from '../services/tasks';
+// import TaskListService from '../services/tasklists';
+import TaskListStore from '../stores/taskListStore';
 
 import TaskList from './taskList';
 import AddTaskListForm from './addTaskListForm';
+
+function getTaskLists() {
+    return TaskListStore.get();
+}
 
 class BaseTodoList extends Component {
     constructor(props) {
         super(props);
 
         this.state = {
-            tasklists: []
+            tasklists: getTaskLists()
         };
-        this.taskService = new TaskService();
-        this.taskListService = new TaskListService();
-        this.moveTasklist = this.moveTasklist.bind(this);
-        this.dropTasklist = this.dropTasklist.bind(this);
-        this.handleCreateTaskList = this.handleCreateTaskList.bind(this);
-        this.handleDeleteTaskList = this.handleDeleteTaskList.bind(this);
-        this.moveTask = this.moveTask.bind(this);
-        this.moveTaskToTasklist = this.moveTaskToTasklist.bind(this);
-        this.dropTask = this.dropTask.bind(this);
-        this.handleCreateTask = this.handleCreateTask.bind(this);
-        this.handleTaskStatusChange = this.handleTaskStatusChange.bind(this);
-        this.handleTaskDelete = this.handleTaskDelete.bind(this);
+        // this.taskService = new TaskService();
+        // this.taskListService = new TaskListService();
+        
+        this.updateTaskLists = this.updateTaskLists.bind(this);
+        // this.dropTasklist = this.dropTasklist.bind(this);
+        // this.moveTasklist = this.moveTasklist.bind(this);
+        // this.handleCreateTaskList = this.handleCreateTaskList.bind(this);
+        // this.handleDeleteTaskList = this.handleDeleteTaskList.bind(this);
+        // this.moveTask = this.moveTask.bind(this);
+        // this.moveTaskToTasklist = this.moveTaskToTasklist.bind(this);
+        // this.dropTask = this.dropTask.bind(this);
+        // this.handleCreateTask = this.handleCreateTask.bind(this);
+        // this.handleTaskStatusChange = this.handleTaskStatusChange.bind(this);
+        // this.handleTaskDelete = this.handleTaskDelete.bind(this);
     }
 
     // React-specific functions
     componentDidMount() {
-        this.loadTaskLists();
+        TaskListStore.addChangeListener(this.updateTaskLists);
+    }
+    
+    componentWillUnmount() {
+        TaskListStore.removeChangeListener(this.updateTaskLists);
+    }
+    
+    updateTaskLists() {
+        this.setState({
+            tasklists: getTaskLists()
+        });
     }
 
     render() {

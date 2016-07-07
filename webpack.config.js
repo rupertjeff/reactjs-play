@@ -18,12 +18,13 @@ module.exports = {
             'react',
             'react-dnd',
             'react-dom',
-            'react-dnd-html5-backend'
+            'react-dnd-html5-backend',
+            'flux'
         ]
     },
     resolve: {
         root: rootPath,
-        extensions: ['', '.js', '.jsx'],
+        extensions: ['', '.js', '.jsx']
     },
     output: {
         path: publicJsPath,
